@@ -1,0 +1,555 @@
+/* ========================
+   Theme variables & base
+   ======================== */
+:root{
+  --accent: #b2874f;
+  --nav-cream: #f4efe8;
+  --nav-cream-2: #efeae3;
+  --nav-dark: #0b2b4a;
+  --muted: #6b6b6b;
+  --text: #222;
+  --paper: #ffffff;
+  --wiki-link: #0645ad;
+}
+
+/* Smooth scrolling */
+html { scroll-behavior: smooth; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--nav-cream); /* cream backdrop across page */
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ========================
+   Promo bar / header (keep existing)
+   ======================== */
+
+
+/* Nav band */
+.nav-band {
+  background: var(--nav-cream);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 240px 1fr 220px;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 20px;
+}
+.brand-wrap { display:flex; align-items:center; gap:10px; }
+.crest { width:48px; height:48px; border-radius:6px; background: var(--nav-dark); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; }
+.brand-name { font-size:20px; color:var(--nav-dark); font-weight:700; }
+
+/* center nav */
+.nav-center { display:flex; justify-content:center; gap:28px; align-items:center; }
+.nav-item { color: var(--nav-dark); text-decoration:none; font-size:16px; padding:6px 8px; border-radius:4px; }
+.nav-item:hover { background: rgba(11,43,74,0.06); }
+.nav-item.active { background: rgba(11,43,74,0.08); color: #07203a; font-weight:700; }
+
+/* right utilities */
+.nav-right { display:flex; align-items:center; gap:12px; color: #102a44; font-size:14px; }
+
+/* breadcrumb row */
+.breadcrumb-row { background: var(--nav-cream-2); border-bottom:1px solid rgba(0,0,0,0.04); }
+.breadcrumb-inner { max-width:1200px; margin:0 auto; padding:8px 20px; }
+.breadcrumb a { color: var(--muted); text-decoration:none; font-size:13px; }
+.breadcrumb .sep { margin:0 8px; color:#b3b3b3; }
+
+/* ---------------------------
+   Full-bleed hero with blurred background layer
+   --------------------------- */
+
+/* make the banner stretch full viewport width regardless of container */
+.hero-banner {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+
+  height: 420px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  color: #fff;
+  transition: height 300ms ease, background-position 300ms ease;
+  z-index: 1; /* keep hero beneath floating left-grid */
+}
+
+/* blurred/dim background layer using the CSS variable set from React */
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* use CSS variable provided inline from React: --banner-url */
+  background-image: var(--banner-url);
+  background-size: cover;
+  background-position: center top;
+  transform: scale(1.03); /* slightly enlarge so blur doesn't show edges */
+  filter: blur(4px) brightness(0.72) saturate(0.9);
+  z-index: 1;
+  transition: filter 300ms ease, transform 300ms ease;
+}
+
+/* top darkening overlay (keeps letters readable) */
+.hero-banner .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.42));
+  transition: background 300ms ease;
+}
+
+/* content sits above everything */
+.hero-banner .hero-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 980px;
+  padding: 28px 20px 48px;
+  text-align: left; /* Historic-UK aligns left within central column */
+}
+
+/* title styling — crisp and readable */
+.hero-banner .hero-content h1 {
+  margin: 0 0 8px 0;
+  font-size: 48px;
+  line-height: 1.02;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 4px 18px rgba(0,0,0,0.45);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* subtitle */
+.hero-banner .hero-content p {
+  margin: 0;
+  font-size: 18px;
+  color: rgba(255,255,255,0.95);
+  font-style: italic;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* collapsed (scrolled) state: reduce height, darken overlay and tighten text */
+.hero-banner.hero-small {
+  height: 170px;
+}
+.hero-banner.hero-small::before {
+  filter: blur(3px) brightness(0.62) saturate(0.9);
+  transform: scale(1.05);
+}
+.hero-banner.hero-small .hero-overlay {
+  background: linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.66));
+}
+.hero-banner.hero-small .hero-content h1 {
+  font-size: 28px;
+}
+.hero-banner.hero-small .hero-content p {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+/* responsive tweaks */
+@media (max-width: 900px) {
+  .hero-banner { height: 260px; }
+  .hero-banner.hero-small { height: 120px; }
+  .hero-banner .hero-content h1 { font-size: 32px; }
+  .hero-banner.hero-small .hero-content h1 { font-size: 20px; }
+  .hero-banner .hero-content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+/* ========================
+   Layout: left contents + content
+   ======================== */
+.layout {
+  display:flex;
+  gap:24px;
+  padding: 20px;
+  align-items:flex-start;
+  min-height: calc(100vh - 36px - 120px);
+}
+
+/* ========================
+   Left contents box (stacked Wikipedia-style)
+   ======================== */
+.left-grid {
+  width: 240px;
+  padding: 10px;
+  box-sizing: border-box;
+  position: sticky;
+  top: calc(36px + 72px); /* adjust for promo + nav */
+  align-self: flex-start;
+  max-height: calc(100vh - 120px);
+  overflow:auto;
+  background: var(--paper);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(20,20,20,0.12);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  /* ensure it can overlap hero */
+  z-index: 110;
+  /* slightly lifted look when overlapping */
+  transform: translateY(0);
+}
+
+/* Pull left-grid up so it overlaps the hero banner visually on wide screens */
+@media (min-width: 1000px) {
+  .left-grid {
+    margin-top: -140px; /* negative to hover over hero; tweak if needed */
+    position: sticky;
+    top: 110px; /* keeps it visible under header while overlapping hero */
+  }
+
+  /* add small decorative border/shadow to emphasize floating card */
+  .left-grid::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    pointer-events: none;
+    box-shadow: 0 8px 30px rgba(20,20,20,0.12);
+  }
+}
+
+/* contents header */
+.contents-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:6px 4px;
+  border-bottom:1px solid rgba(0,0,0,0.04);
+  margin-bottom:8px;
+}
+.contents-header strong { color: #202122; font-weight:700; }
+
+/* stacked list */
+.contents-list { padding:6px 0; max-height: calc(100vh - 200px); overflow:auto; }
+.contents-list ul { list-style:none; margin:0; padding:0; }
+.contents-item { margin:6px 0; }
+.contents-link {
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:6px 8px;
+  border-radius:4px;
+  border-left:3px solid transparent;
+  background:transparent;
+  color: var(--wiki-link);
+  text-decoration:none;
+  cursor:pointer;
+  font-size:13px;
+}
+.contents-link:hover { background:#f6f6f6; color: var(--nav-dark); }
+.contents-item.active > .contents-link {
+  background: linear-gradient(to right, #f8f9fa, #ffffff);
+  font-weight:700;
+  border-left:3px solid var(--accent);
+  color:#202122;
+}
+.left-grid::-webkit-scrollbar { width:8px; }
+.left-grid::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius:6px; }
+
+/* ========================
+   Main content & page card
+   ======================== */
+.content { flex:1; min-width:0; padding: 26px 40px; overflow:auto; }
+.page {
+  max-width: 980px;
+  margin: 8px auto;
+  background: var(--paper);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  padding: 28px;
+  color: var(--text);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* hero card (inside page) - keep for fallback */
+.hero {
+  padding:20px;
+  border-radius:8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+  margin-bottom:18px;
+}
+.hero h1 { color: var(--nav-dark); margin:0; font-size:28px; }
+.hero .muted { color: var(--muted); }
+
+/* sections inside page */
+.section {
+  padding: 24px 18px;
+  margin: 18px 0;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.01);
+}
+.section h2, .section h3 { margin-top:0; color: #222; }
+.section p { color: #333; line-height: 1.6; }
+
+/* highlight */
+.highlight {
+  background: linear-gradient(90deg, rgba(178,135,79,0.12), rgba(178,135,79,0.04));
+  padding:2px 6px;
+  border-radius:4px;
+  color:#5a3f24;
+}
+
+/* footnote links / inline */
+.footnote { font-size:13px; color:var(--muted); margin-top:8px; }
+.footnote-link { color: var(--nav-dark); text-decoration: none; margin-right:6px; cursor:pointer; }
+.footnote-link:hover { text-decoration: underline; color: var(--accent); }
+
+/* references list */
+.references-list { margin-left: 18px; color: #444; padding-left:0; margin-top: 20px; }
+.references-list li { margin: 8px 0; font-size: 14px; list-style: none; padding-left: 8px; border-left: 3px solid rgba(178,135,79,0.25); }
+
+/* ========================
+   Wiki-like contents alternate box (if used elsewhere)
+   ======================== */
+.contents-box {
+  box-sizing: border-box;
+  width: 230px;
+  padding: 8px;
+  margin: 12px 0;
+  background: var(--paper);
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  border-radius: 2px;
+  border: 1px solid #a2a9b1;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+}
+
+/* ========================
+   Footer
+   ======================== */
+.footer { height:60px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; }
+
+/* ========================
+   Responsiveness & small screens
+   ======================== */
+@media (max-width: 1100px) {
+  .nav-inner { grid-template-columns: 180px 1fr 160px; padding: 12px; }
+  .content { padding: 20px; }
+  .page { max-width: 760px; }
+}
+@media (max-width: 900px) {
+  .layout { padding: 12px; flex-direction: column; }
+  .left-grid { display:none; } /* keep left nav hidden on small screens */
+  .page { margin: 10px; padding: 18px; }
+  .nav-inner { grid-template-columns: 1fr; grid-template-rows: auto auto; gap:8px; padding:12px; }
+  .nav-center { justify-content:space-around; }
+}
+@media (max-width: 720px) {
+  .hero { padding: 12px; }
+  .hero h1 { font-size:22px; }
+  .crest { width:36px; height:36px; font-size:16px; }
+}
+
+/* ========================
+   Small helpers
+   ======================== */
+a { color: var(--accent); }
+code { background: rgba(255,255,255,0.02); padding: 2px 6px; border-radius:4px; color:var(--muted); font-family:monospace; }
+button:focus, a:focus { outline: 3px solid rgba(178,135,79,0.12); outline-offset: 2px; }
+.leftgrid-container {
+  position: sticky;
+  top: 120px;
+  width: 250px;
+  margin-top: -100px;
+  display: none;
+}
+@media (min-width: 992px) {
+  .leftgrid-container {
+    display: block;
+  }
+}
+
+.leftgrid-box {
+  background: #ffffffcc;
+  backdrop-filter: blur(6px);
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.leftgrid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.leftgrid-sub {
+  font-size: 12px;
+  color: #777;
+}
+.leftgrid-count {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.leftgrid-nav {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #f0f0f0;
+}
+.leftgrid-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 10px 8px;
+  border-left: 3px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+  font-size: 14px;
+  color: #333;
+}
+.leftgrid-item:hover {
+  background: #f9f9f9;
+}
+.leftgrid-item.active {
+  background: #fffaf4;
+  border-left-color: #b2874f;
+  font-weight: 600;
+}
+.leftgrid-number {
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  border-radius: 50%;
+  background: #eee;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.leftgrid-item.active .leftgrid-number {
+  background: #b2874f;
+  color: white;
+}
+.leftgrid-tip {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #888;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
+}
+
+/* --- Mobile --- */
+.mobile-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 50%;
+  padding: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.mobile-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+.mobile-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+.mobile-panel {
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  width: 280px;
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.mobile-header button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.mobile-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.mobile-item:hover {
+  background: #f8f8f8;
+}
+.mobile-item.active {
+  background: #fff4e8;
+  font-weight: bold;
+}
+.mobile-number {
+  background: #eee;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  font-size: 12px;
+}
+.mobile-item.active .mobile-number {
+  background: #b2874f;
+  color: white;
+}
+/* ---------- Adjustments so left nav starts below hero and behaves nicely ---------- */
+
+/* make sure hero sits behind nav area but not overlap content */
+.hero-banner { z-index: 1; }
+
+/* sticky (non-fixed) left nav container — now with inline style marginTop/top computed in JS */
+.leftgrid-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  width: 260px;
+  align-self: flex-start;
+  z-index: 130; /* above hero and header */
+}
+
+
